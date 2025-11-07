@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC NEWS</title>
+    <style>
+        /* 基础样式 */
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ff5722;
+            --text-color: #ffffff;
+            --button-hover: #ff7043;
+            --card-bg: #1a1a1a;
+            --border-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* 头部样式 */
+        header {
+            position: relative;
+            height: 60vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #header-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+        
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+        
+        .header-title {
+            position: relative;
+            z-index: 3;
+            font-size: 4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.7);
+        }
+        
+        /* 主按钮区域 */
+        .main-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .main-button {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .main-button:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+        }
+        
+        .button-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .button-desc {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* 子页面样式 */
+        .subpage {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .subpage-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .back-button {
+            background: none;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .subpage-title {
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+        }
+        
+        /* 输入区域样式 */
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .input-hint {
+            font-size: 0.8rem;
+            color: #999999;
+            margin-bottom: 15px;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+        
+        .submit-button {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            background-color: var(--button-hover);
+        }
+        
+        /* 加载动画 */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 87, 34, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--secondary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 结果区域样式 */
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.2);
+        }
+        
+        .result-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .result-video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .result-content {
+            padding: 15px;
+        }
+        
+        .result-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .action-button {
+            background: none;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .action-button:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        /* 历史记录样式 */
+        .history-section {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .history-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .history-item {
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            border-color: var(--secondary-color);
+        }
+        
+        /* 底部样式 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666666;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 50px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 2.5rem;
+            }
+            
+            .main-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-grid, .history-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主页 -->
+    <div id="home-page">
+        <header>
+            <video id="header-video" autoplay muted loop>
+                <source src="file:///Users/xiaohua/Downloads/ISC%20NEWS.mp4" type="video/mp4">
+                您的浏览器不支持视频标签。
+            </video>
+            <div class="header-overlay"></div>
+            <h1 class="header-title">ISC NEWS</h1>
+        </header>
+        
+        <div class="main-buttons">
+            <div class="main-button" id="hotspot-button">
+                <h2 class="button-title">热点工坊</h2>
+                <p class="button-desc">挖掘每日热点，提供更多时髦新鲜感</p>
+            </div>
+            <div class="main-button" id="lamp-button">
+                <h2 class="button-title">个性灯牌</h2>
+                <p class="button-desc">智己为自己代言，随行的专属广告位</p>
+            </div>
+            <div class="main-button" id="grain-button">
+                <h2 class="button-title">吃谷一族</h2>
+                <p class="button-desc">让所有看到的谷子的人，都能心情愉悦</p>
+            </div>
+            <div class="main-button" id="square-button">
+                <h2 class="button-title">共创广场</h2>
+                <p class="button-desc">汇集车友创意，共创出街弹幕</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 热点工坊子页面 -->
+    <div class="subpage" id="hotspot-page">
+        <div class="subpage-header">
+            <button class="back-button">返回</button>
+            <h2 class="subpage-title">热点工坊</h2>
+        </div>
+        
+        <div class="input-section">
+            <button class="submit-button" id="generate-hotspot">生成今日热点</button>
+        </div>
+        
+        <div class="loading-container" id="hotspot-loading">
+            <div class="loading-spinner"></div>
+            <p>正在生成热点内容，请稍候...</p>
+        </div>
+        
+        <div class="results-section" id="hotspot-results">
+            <h3>热点内容</h3>
+            <div class="results-grid" id="hotspot-results-grid">
+                <!-- 结果将通过JS动态添加 -->
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <h3 class="history-title">前三天的热点工坊</h3>
+            <div class="history-grid">
+                <div class="history-item" data-link="https://your-feishu-doc-link-1.com">
+                    <p>热点工坊 - 2023-11-01</p>
+                </div>
+                <div class="history-item" data-link="https://your-feishu-doc-link-2.com">
+                    <p>热点工坊 - 2023-10-31</p>
+                </div>
+                <div class="history-item" data-link="https://your-feishu-doc-link-3.com">
+                    <p>热点工坊 - 2023-10-30</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 个性灯牌子页面 -->
+    <div class="subpage" id="lamp-page">
+        <div class="subpage-header">
+            <button class="back-button">返回</button>
+            <h2 class="subpage-title">个性灯牌</h2>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">请写上要投的广子</label>
+            <p class="input-hint">使用英文效果最佳，不超过6个中文字符，并选择笔画简单的文字</p>
+            <input type="text" class="text-input" id="lamp-text" placeholder="输入您的广告语">
+            <button class="submit-button" id="generate-lamp">生成灯牌</button>
+        </div>
+        
+        <div class="loading-container" id="lamp-loading">
+            <div class="loading-spinner"></div>
+            <p>正在生成个性灯牌，请稍候...</p>
+        </div>
+        
+        <div class="results-section" id="lamp-results">
+            <h3>灯牌内容</h3>
+            <div class="results-grid" id="lamp-results-grid">
+                <!-- 结果将通过JS动态添加 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 吃谷一族子页面 -->
+    <div class="subpage" id="grain-page">
+        <div class="subpage-header">
+            <button class="back-button">返回</button>
+            <h2 class="subpage-title">吃谷一族</h2>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">请导入喜欢的谷子图像</label>
+            <p class="input-hint">图形越简洁清晰，显示效果越好</p>
+            <input type="file" class="text-input" id="grain-image" accept="image/*">
+            <button class="submit-button" id="generate-grain">生成谷子内容</button>
+        </div>
+        
+        <div class="loading-container" id="grain-loading">
+            <div class="loading-spinner"></div>
+            <p>正在生成谷子内容，请稍候...</p>
+        </div>
+        
+        <div class="results-section" id="grain-results">
+            <h3>谷子内容</h3>
+            <div class="results-grid" id="grain-results-grid">
+                <!-- 结果将通过JS动态添加 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 共创广场子页面 -->
+    <div class="subpage" id="square-page">
+        <div class="subpage-header">
+            <button class="back-button">返回</button>
+            <h2 class="subpage-title">共创广场</h2>
+        </div>
+        
+        <div class="loading-container" id="square-loading">
+            <div class="loading-spinner"></div>
+            <p>正在加载共创内容，请稍候...</p>
+        </div>
+        
+        <div class="results-section" id="square-results">
+            <h3>共创灯语库 Top 30</h3>
+            <div class="results-grid" id="square-results-grid">
+                <!-- 结果将通过JS动态添加 -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>软件产品创新策划CXH</p>
+    </footer>
+
+    <script>
+        // 页面导航逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            // 主页按钮点击事件
+            document.getElementById('hotspot-button').addEventListener('click', function() {
+                showPage('hotspot-page');
+            });
+            
+            document.getElementById('lamp-button').addEventListener('click', function() {
+                showPage('lamp-page');
+            });
+            
+            document.getElementById('grain-button').addEventListener('click', function() {
+                showPage('grain-page');
+            });
+            
+            document.getElementById('square-button').addEventListener('click', function() {
+                showPage('square-page');
+                loadSquareData();
+            });
+            
+            // 返回按钮点击事件
+            const backButtons = document.querySelectorAll('.back-button');
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    showPage('home-page');
+                });
+            });
+            
+            // 热点工坊生成按钮
+            document.getElementById('generate-hotspot').addEventListener('click', function() {
+                generateHotspot();
+            });
+            
+            // 个性灯牌生成按钮
+            document.getElementById('generate-lamp').addEventListener('click', function() {
+                generateLamp();
+            });
+            
+            // 吃谷一族生成按钮
+            document.getElementById('generate-grain').addEventListener('click', function() {
+                generateGrain();
+            });
+            
+            // 历史记录点击跳转
+            const historyItems = document.querySelectorAll('.history-item');
+            historyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const link = this.getAttribute('data-link');
+                    if (link) {
+                        window.open(link, '_blank');
+                    }
+                });
+            });
+        });
+        
+        // 显示指定页面，隐藏其他页面
+        function showPage(pageId) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.subpage, #home-page');
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // 显示指定页面
+            document.getElementById(pageId).style.display = 'block';
+        }
+        
+        // 热点工坊生成函数
+        function generateHotspot() {
+            // 显示加载动画
+            document.getElementById('hotspot-loading').style.display = 'block';
+            document.getElementById('hotspot-results').style.display = 'none';
+            
+            // 调用n8n API - 这里需要替换为实际的API端点
+            fetch('https://your-n8n-instance.com/webhook/hotspot-workflow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // 如果有参数可以在这里添加
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载动画
+                document.getElementById('hotspot-loading').style.display = 'none';
+                
+                // 显示结果
+                document.getElementById('hotspot-results').style.display = 'block';
+                
+                // 处理并显示返回的数据
+                displayHotspotResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('hotspot-loading').style.display = 'none';
+                alert('生成热点内容时出错，请稍后重试。');
+            });
+        }
+        
+        // 个性灯牌生成函数
+        function generateLamp() {
+            const text = document.getElementById('lamp-text').value.trim();
+            
+            if (!text) {
+                alert('请输入广告语');
+                return;
+            }
+            
+            // 显示加载动画
+            document.getElementById('lamp-loading').style.display = 'block';
+            document.getElementById('lamp-results').style.display = 'none';
+            
+            // 调用n8n API - 这里需要替换为实际的API端点
+            fetch('https://your-n8n-instance.com/webhook/lamp-workflow', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    text: text
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载动画
+                document.getElementById('lamp-loading').style.display = 'none';
+                
+                // 显示结果
+                document.getElementById('lamp-results').style.display = 'block';
+                
+                // 处理并显示返回的数据
+                displayLampResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('lamp-loading').style.display = 'none';
+                alert('生成个性灯牌时出错，请稍后重试。');
+            });
+        }
+        
+        // 吃谷一族生成函数
+        function generateGrain() {
+            const imageInput = document.getElementById('grain-image');
+            
+            if (!imageInput.files || !imageInput.files[0]) {
+                alert('请选择一张图片');
+                return;
+            }
+            
+            // 显示加载动画
+            document.getElementById('grain-loading').style.display = 'block';
+            document.getElementById('grain-results').style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+            
+            // 调用n8n API - 这里需要替换为实际的API端点
+            fetch('https://your-n8n-instance.com/webhook/grain-workflow', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载动画
+                document.getElementById('grain-loading').style.display = 'none';
+                
+                // 显示结果
+                document.getElementById('grain-results').style.display = 'block';
+                
+                // 处理并显示返回的数据
+                displayGrainResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('grain-loading').style.display = 'none';
+                alert('生成谷子内容时出错，请稍后重试。');
+            });
+        }
+        
+        // 加载共创广场数据
+        function loadSquareData() {
+            // 显示加载动画
+            document.getElementById('square-loading').style.display = 'block';
+            document.getElementById('square-results').style.display = 'none';
+            
+            // 调用n8n API - 这里需要替换为实际的API端点
+            fetch('https://your-n8n-instance.com/webhook/square-workflow', {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载动画
+                document.getElementById('square-loading').style.display = 'none';
+                
+                // 显示结果
+                document.getElementById('square-results').style.display = 'block';
+                
+                // 处理并显示返回的数据
+                displaySquareResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('square-loading').style.display = 'none';
+                alert('加载共创内容时出错，请稍后重试。');
+            });
+        }
+        
+        // 显示热点工坊结果
+        function displayHotspotResults(data) {
+            const resultsGrid = document.getElementById('hotspot-results-grid');
+            resultsGrid.innerHTML = '';
+            
+            // 假设数据结构包含文案、图片和视频
+            if (data.texts && data.texts.length > 0) {
+                data.texts.forEach(text => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <div class="result-content">
+                            <p>${text}</p>
+                            <div class="result-actions">
+                                <button class="action-button" onclick="downloadItem('${text}', 'text')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${text}', 'text')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(item);
+                });
+            }
+            
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(image => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <img src="${image.url}" alt="热点图片" class="result-image">
+                        <div class="result-content">
+                            <div class="result-actions">
+                                <button class="action-button" onclick="previewItem('${image.url}', 'image')">放大预览</button>
+                                <button class="action-button" onclick="downloadItem('${image.url}', 'image')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${image.url}', 'image')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(item);
+                });
+            }
+            
+            if (data.videos && data.videos.length > 0) {
+                data.videos.forEach(video => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <video class="result-video" controls>
+                            <source src="${video.url}" type="video/mp4">
+                            您的浏览器不支持视频标签。
+                        </video>
+                        <div class="result-content">
+                            <div class="result-actions">
+                                <button class="action-button" onclick="previewItem('${video.url}', 'video')">放大预览</button>
+                                <button class="action-button" onclick="downloadItem('${video.url}', 'video')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${video.url}', 'video')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(item);
+                });
+            }
+        }
+        
+        // 显示个性灯牌结果
+        function displayLampResults(data) {
+            const resultsGrid = document.getElementById('lamp-results-grid');
+            resultsGrid.innerHTML = '';
+            
+            // 假设数据结构包含文案、图片和视频
+            // 这里使用与热点工坊类似的结构，实际应根据API返回调整
+            displayHotspotResults(data);
+        }
+        
+        // 显示吃谷一族结果
+        function displayGrainResults(data) {
+            const resultsGrid = document.getElementById('grain-results-grid');
+            resultsGrid.innerHTML = '';
+            
+            // 假设数据结构包含图片和视频
+            // 这里使用与热点工坊类似的结构，实际应根据API返回调整
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(image => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <img src="${image.url}" alt="谷子图片" class="result-image">
+                        <div class="result-content">
+                            <div class="result-actions">
+                                <button class="action-button" onclick="previewItem('${image.url}', 'image')">放大预览</button>
+                                <button class="action-button" onclick="downloadItem('${image.url}', 'image')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${image.url}', 'image')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(item);
+                });
+            }
+            
+            if (data.videos && data.videos.length > 0) {
+                data.videos.forEach(video => {
+                    const item = document.createElement('div');
+                    item.className = 'result-item';
+                    item.innerHTML = `
+                        <video class="result-video" controls>
+                            <source src="${video.url}" type="video/mp4">
+                            您的浏览器不支持视频标签。
+                        </video>
+                        <div class="result-content">
+                            <div class="result-actions">
+                                <button class="action-button" onclick="previewItem('${video.url}', 'video')">放大预览</button>
+                                <button class="action-button" onclick="downloadItem('${video.url}', 'video')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${video.url}', 'video')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(item);
+                });
+            }
+        }
+        
+        // 显示共创广场结果
+        function displaySquareResults(data) {
+            const resultsGrid = document.getElementById('square-results-grid');
+            resultsGrid.innerHTML = '';
+            
+            // 假设数据结构包含图片和视频以及应用量
+            if (data.items && data.items.length > 0) {
+                data.items.forEach(item => {
+                    const element = document.createElement('div');
+                    element.className = 'result-item';
+                    
+                    let mediaElement = '';
+                    if (item.type === 'image') {
+                        mediaElement = `<img src="${item.url}" alt="共创图片" class="result-image">`;
+                    } else if (item.type === 'video') {
+                        mediaElement = `
+                            <video class="result-video" controls>
+                                <source src="${item.url}" type="video/mp4">
+                                您的浏览器不支持视频标签。
+                            </video>
+                        `;
+                    }
+                    
+                    element.innerHTML = `
+                        ${mediaElement}
+                        <div class="result-content">
+                            <p>应用量: ${item.appliedCount || 0}</p>
+                            <div class="result-actions">
+                                <button class="action-button" onclick="previewItem('${item.url}', '${item.type}')">放大预览</button>
+                                <button class="action-button" onclick="downloadItem('${item.url}', '${item.type}')">下载</button>
+                                <button class="action-button" onclick="applyToCar('${item.url}', '${item.type}')">应用到车机</button>
+                            </div>
+                        </div>
+                    `;
+                    resultsGrid.appendChild(element);
+                });
+            }
+        }
+        
+        // 通用功能函数
+        function previewItem(url, type) {
+            if (type === 'image') {
+                window.open(url, '_blank');
+            } else if (type === 'video') {
+                // 对于视频，可以使用模态框或新窗口播放
+                const videoWindow = window.open('', '_blank');
+                videoWindow.document.write(`
+                    <html>
+                        <head><title>视频预览</title></head>
+                        <body style="margin:0;background:#000;">
+                            <video controls autoplay style="width:100%;height:100vh;">
+                                <source src="${url}" type="video/mp4">
+                                您的浏览器不支持视频标签。
+                            </video>
+                        </body>
+                    </html>
+                `);
+            } else {
+                // 对于文本，可以显示在弹窗中
+                alert(url);
+            }
+        }
+        
+        function downloadItem(url, type) {
+            // 创建临时下载链接
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `iscnews_${type}_${Date.now()}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            alert('下载成功！');
+        }
+        
+        function applyToCar(url, type) {
+            // 这里应该是与车机系统集成的代码
+            // 目前仅显示提示信息
+            alert(`已将${type === 'text' ? '文案' : type === 'image' ? '图片' : '视频'}应用到车机系统`);
+        }
+    </script>
+</body>
+</html>
